@@ -12,7 +12,7 @@ from umap import UMAP
 from torch.optim import Adam
 from torch.utils.tensorboard import SummaryWriter
 
-X_SHAPE = (6, 1, 640, 480)
+X_SHAPE = (6, 1, 640, 480) #dimensions of the inidividual videos
 X_DIM = np.prod(X_SHAPE)
 
 class BehaviourVAE(nn.Module):
@@ -229,6 +229,9 @@ class BehaviourVAE(nn.Module):
         self.epoch = checkpoint['epoch']
 
     def get_latent_umap(self, loaders, save_dir, title=None):
+        """UMAP
+        Not sure if these are mapped correctly or if there are still dimension mismatches here."""
+
         filename = str(self.epoch).zfill(3) + '_latents.pdf'
         file_path = os.path.join(save_dir, filename)
         #print(f"Test-Set Length: {len(loaders['test'].dataset)}")
@@ -258,6 +261,10 @@ class BehaviourVAE(nn.Module):
         return projection
 
     def log_reconstruction(self, frames, batch_size, log_type):
+        """log recons
+        Pretty sure there are dimension mismatches here but i can´t seem to find them.
+        in Dataloader i´m transforming the data via: self.frames = frames.permute(0,3,2,1).double()"""
+
         frames = frames.reshape((batch_size, X_SHAPE[0], X_SHAPE[1], X_SHAPE[2], X_SHAPE[3]))
         for i in range(batch_size):
             print(frames.shape)
